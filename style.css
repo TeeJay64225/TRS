@@ -1,0 +1,195 @@
+/* Common Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+:root{
+
+    /* Light Mode */
+    --bodyBg:#c9dbe7;
+    --paraColor1:#838a99;
+    --paraColor2:#949ca8;
+    --primaryColor:#1A667A;
+    --secondaryColor:#0B1535;
+    --navBg:#DDE8EB;
+    --contentBg:#ddeaf3;
+    --containerBg:#FFFFFF;
+    --headlineColor:#050B2C;
+    --subheadlineColor:#9199a5;
+    --btnBg:#CDD3DE;
+    --btnShadow:#d7deeb;
+
+    /* Common */
+    --progressBar:#1A667A;
+
+}
+
+.darkTheme{
+    --bodyBg:#121213;
+    --paraColor1:#757577;
+    --paraColor2:#7A7A7B;
+    --primaryColor:#FFFFFF;
+    --secondaryColor:#FFFFFF;
+    --navBg:#1A667A;
+    --contentBg:#252529;
+    --containerBg:#1A1A1E;
+    --headlineColor:#ECECEC;
+    --subheadlineColor:#7A7A7B;
+    --btnBg:#1A1A1E;
+    --btnShadow:#2c2c31;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url(bg.jpg) no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.wrapper, .dashboard-container {
+  width: 100%;
+  max-width: 420px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, .2);
+  backdrop-filter: blur(9px);
+  color: #fff;
+  border-radius: 12px;
+  padding: 30px 40px;
+  margin: 20px;
+}
+
+.wrapper h1, .dashboard-container h1 {
+  font-size: 36px;
+  text-align: center;
+}
+
+/* Input Box Styles */
+.input-box {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 30px 0;
+}
+
+.input-box input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  border: 2px solid rgba(255, 255, 255, .2);
+  border-radius: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+  color: #fff;
+}
+
+.input-box i {
+  position: absolute;
+  right: 20px;
+  top: 30%;
+  transform: translate(-50%);
+  font-size: 20px;
+}
+
+/* Remember and Forgot Styles */
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  margin: -15px 0 15px;
+}
+
+.remember-forgot label input {
+  accent-color: #fff;
+  margin-right: 3px;
+}
+
+.remember-forgot a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.remember-forgot a:hover {
+  text-decoration: underline;
+}
+
+/* Button Styles */
+.wrapper .btn {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: 45px;
+  margin: 20px auto;
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+  line-height: 45px; /* Vertically center text */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.wrapper .btn:hover:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+/* Link Styles */
+.register-link, .login-link {
+  font-size: 14.5px;
+  text-align: center;
+  margin: 20px 0 15px;
+}
+
+.register-link p a, .login-link p a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link p a:hover, .login-link p a:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard Specific Styling */
+.dashboard-container {
+  text-align: center;
+}
+
+.dashboard-container p {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.dashboard-container a, .logout-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.dashboard-container a:hover, .logout-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
