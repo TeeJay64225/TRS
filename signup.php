@@ -14,32 +14,38 @@
     include('db.php');
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      $phone_number = $_POST['phone_number'];
+      $firstname = $conn->real_escape_string($_POST['firstname']);
+      $lastname = $conn->real_escape_string($_POST['lastname']);
+      $role = $conn->real_escape_string($_POST['role']);
+      $email = $conn->real_escape_string($_POST['email']);
+      $phone_number = $conn->real_escape_string($_POST['phone_number']);
       $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
-      $role = 'user'; // Default role for new users
 
-      // Check if the phone number already exists
-      $check_sql = "SELECT * FROM users WHERE phone_number='$phone_number'";
+      // Check if the phone number or email already exists
+      $check_sql = "SELECT * FROM users WHERE phone_number='$phone_number' OR email='$email'";
       $result = $conn->query($check_sql);
 
       if ($result->num_rows > 0) {
-        echo "        This phone number is already registered.";
+        echo "This phone number or email is already registered.";
       } else {
-        $sql = "INSERT INTO users (phone_number, password, role) VALUES ('$phone_number', '$password', '$role')";
+        $stmt = $conn->prepare("INSERT INTO users (firstname, lastname, role, email, phone_number, password) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $firstname, $lastname, $role, $email, $phone_number, $password);
 
-        if ($conn->query($sql) === TRUE) {
-          echo "      New account created successfully";
+        if ($stmt->execute()) {
+          echo "New account created successfully";
           // Optionally, redirect to the login page
           // header("Location: login.php");
           // exit();
         } else {
-          echo "Error: " . $sql . "<br>" . $conn->error;
+          echo "Error: " . $stmt->error;
         }
+
+        $stmt->close();
       }
+
+      $conn->close();
     }
     ?>
-
-
 
     <h1>Create Account</h1>
     <form action="signup.php" method="post">
