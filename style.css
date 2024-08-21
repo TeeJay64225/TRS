@@ -50,7 +50,28 @@ body {
   background: url(bg.jpg) no-repeat;
   background-size: cover;
   background-position: center;
+  position: relative; /* Make the body relative for the overlay */
 }
+
+/* Overlay to blur the background */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(9px); /* Apply blur to the background */
+  -webkit-backdrop-filter: blur(9px); /* Safari support */
+  z-index: -1; /* Send it behind the content */
+}
+
+/* Ensure the wrapper content is clear and above the blur */
+.wrapper {
+  position: relative; /* Ensure wrapper content stays above the background blur */
+  z-index: 1;
+}
+
 
 .wrapper, .dashboard-container {
   width: 100%;

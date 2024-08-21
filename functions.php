@@ -1,381 +1,152 @@
 <?php
+// Start the session
+session_start();
 
+/**
+ * Database Connection Helper
+ */
+function get_db_connection()
+{
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "trs";
 
-include_once("includes/config.php");
+	// Create connection
+	$conn = new mysqli($servername, $username, $password, $dbname);
 
-// get invoice list
-function getInvoices() {
-
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-		die('Error : ('.$mysqli->connect_errno .') '. $mysqli->connect_error);
+	// Check connection
+	if ($conn->connect_error) {
+		die("Connection failed: " . $conn->connect_error);
 	}
 
-	// the query
-    $query = "SELECT * 
-		FROM invoices i
-		JOIN customers c
-		ON c.invoice = i.invoice
-		WHERE i.invoice = c.invoice
-		ORDER BY i.invoice";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	// mysqli select query
-	if($results) {
-
-		print '<table class="table table-striped table-hover table-bordered" id="data-table" cellspacing="0"><thead><tr>
-
-				<th>Invoice</th>
-				<th>Customer</th>
-				<th>Issue Date</th>
-				<th>Due Date</th>
-				<th>Type</th>
-				<th>Status</th>
-				<th>Actions</th>
-
-			  </tr></thead><tbody>';
-
-		while($row = $results->fetch_assoc()) {
-
-			print '
-				<tr>
-					<td>'.$row["invoice"].'</td>
-					<td>'.$row["name"].'</td>
-				    <td>'.$row["invoice_date"].'</td>
-				    <td>'.$row["invoice_due_date"].'</td>
-				    <td>'.$row["invoice_type"].'</td>
-				';
-
-				if($row['status'] == "open"){
-					print '<td><span class="label label-primary">'.$row['status'].'</span></td>';
-				} elseif ($row['status'] == "paid"){
-					print '<td><span class="label label-success">'.$row['status'].'</span></td>';
-				}
-
-			print '
-				    <td><a href="invoice-edit.php?id='.$row["invoice"].'" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a> <a href="#" data-invoice-id="'.$row['invoice'].'" data-email="'.$row['email'].'" data-invoice-type="'.$row['invoice_type'].'" data-custom-email="'.$row['custom_email'].'" class="btn btn-success btn-xs email-invoice"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a> <a href="invoices/'.$row["invoice"].'.pdf" class="btn btn-info btn-xs" target="_blank"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a> <a data-invoice-id="'.$row['invoice'].'" class="btn btn-danger btn-xs delete-invoice"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-			    </tr>
-			';
-
-		}
-
-		print '</tr></tbody></table>';
-
-	} else {
-
-		echo "<p>There are no invoices to display.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
-
+	return $conn;
 }
 
-// Initial invoice number
-function getInvoiceId() {
+/**
+ * User Authentication Helpers
+ */
 
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
+// Login Function
+function login($phone_number, $password)
+{
+	$conn = get_db_connection();
+	$stmt = $conn->prepare("SELECT id, password FROM users WHERE phone_number = ?");
+	$stmt->bind_param("s", $phone_number);
+	$stmt->execute();
+	$stmt->store_result();
 
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
-
-	$query = "SELECT invoice FROM invoices ORDER BY invoice DESC LIMIT 1";
-
-	if ($result = $mysqli->query($query)) {
-
-		$row_cnt = $result->num_rows;
-
-	    $row = mysqli_fetch_assoc($result);
-
-	    //var_dump($row);
-
-	    if($row_cnt == 0){
-			echo INVOICE_INITIAL_VALUE;
-		} else {
-			echo $row['invoice'] + 1; 
+	if ($stmt->num_rows > 0) {
+		$stmt->bind_result($user_id, $hashed_password);
+		$stmt->fetch();
+		if (password_verify($password, $hashed_password)) {
+			$_SESSION['user_id'] = $user_id;
+			return true;
 		}
-
-	    // Frees the memory associated with a result
-		$result->free();
-
-		// close connection 
-		$mysqli->close();
 	}
-	
+	return false;
 }
 
-// populate product dropdown for invoice creation
-function popProductsList() {
-
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
-
-	// the query
-	$query = "SELECT * FROM products ORDER BY product_name ASC";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	if($results) {
-		echo '<select class="form-control item-select">';
-		while($row = $results->fetch_assoc()) {
-
-		    print '<option value="'.$row['product_price'].'">'.$row["product_name"].' - '.$row["product_desc"].'</option>';
-		}
-		echo '</select>';
-
-	} else {
-
-		echo "<p>There are no products, please add a product.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
-
+// Check if User is Logged In
+function is_logged_in()
+{
+	return isset($_SESSION['user_id']);
 }
 
-// populate product dropdown for invoice creation
-function popCustomersList() {
-
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
-
-	// the query
-	$query = "SELECT * FROM store_customers ORDER BY name ASC";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	if($results) {
-
-		print '<table class="table table-striped table-hover table-bordered" id="data-table"><thead><tr>
-
-				<th>Name</th>
-				<th>Email</th>
-				<th>Phone</th>
-				<th>Action</th>
-
-			  </tr></thead><tbody>';
-
-		while($row = $results->fetch_assoc()) {
-
-		    print '
-			    <tr>
-					<td>'.$row["name"].'</td>
-				    <td>'.$row["email"].'</td>
-				    <td>'.$row["phone"].'</td>
-				    <td><a href="#" class="btn btn-primary btn-xs customer-select" data-customer-name="'.$row['name'].'" data-customer-email="'.$row['email'].'" data-customer-phone="'.$row['phone'].'" data-customer-address-1="'.$row['address_1'].'" data-customer-address_2="'.$row['address_2'].'" data-customer-town="'.$row['town'].'" data-customer-county="'.$row['county'].'" data-customer-postcode="'.$row['postcode'].'" data-customer-name-ship="'.$row['name_ship'].'" data-customer-address-1-ship="'.$row['address_1_ship'].'" data-customer-address-2-ship="'.$row['address_2_ship'].'" data-customer-town-ship="'.$row['town_ship'].'" data-customer-county-ship="'.$row['county_ship'].'" data-customer-postcode-ship="'.$row['postcode_ship'].'">Select</a></td>
-			    </tr>
-		    ';
-		}
-
-		print '</tr></tbody></table>';
-
-	} else {
-
-		echo "<p>There are no customers to display.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
-
+// Logout Function
+function logout()
+{
+	session_unset();
+	session_destroy();
 }
 
-// get products list
-function getProducts() {
-
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
-
-	// the query
-	$query = "SELECT * FROM products ORDER BY product_name ASC";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	if($results) {
-
-		print '<table class="table table-striped table-hover table-bordered" id="data-table"><thead><tr>
-
-				<th>Product</th>
-				<th>Description</th>
-				<th>Price</th>
-				<th>Action</th>
-
-			  </tr></thead><tbody>';
-
-		while($row = $results->fetch_assoc()) {
-
-		    print '
-			    <tr>
-					<td>'.$row["product_name"].'</td>
-				    <td>'.$row["product_desc"].'</td>
-				    <td>$'.$row["product_price"].'</td>
-				    <td><a href="product-edit.php?id='.$row["product_id"].'" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a> <a data-product-id="'.$row['product_id'].'" class="btn btn-danger btn-xs delete-product"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-			    </tr>
-		    ';
-		}
-
-		print '</tr></tbody></table>';
-
-	} else {
-
-		echo "<p>There are no products to display.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
+/**
+ * Input Validation and Sanitization
+ */
+function sanitize_input($data)
+{
+	return htmlspecialchars(stripslashes(trim($data)));
 }
 
-// get user list
-function getUsers() {
-
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
-
-	// the query
-	$query = "SELECT * FROM users ORDER BY username ASC";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	if($results) {
-
-		print '<table class="table table-striped table-hover table-bordered" id="data-table"><thead><tr>
-
-				<th>Name</th>
-				<th>Username</th>
-				<th>Email</th>
-				<th>Phone</th>
-				<th>Action</th>
-
-			  </tr></thead><tbody>';
-
-		while($row = $results->fetch_assoc()) {
-
-		    print '
-			    <tr>
-			    	<td>'.$row['name'].'</td>
-					<td>'.$row["username"].'</td>
-				    <td>'.$row["email"].'</td>
-				    <td>'.$row["phone"].'</td>
-				    <td><a href="user-edit.php?id='.$row["id"].'" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a> <a data-user-id="'.$row['id'].'" class="btn btn-danger btn-xs delete-user"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-			    </tr>
-		    ';
-		}
-
-		print '</tr></tbody></table>';
-
-	} else {
-
-		echo "<p>There are no users to display.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
+function validate_email($email)
+{
+	return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-// get user list
-function getCustomers() {
+/**
+ * CSRF Protection
+ */
 
-	// Connect to the database
-	$mysqli = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASS, DATABASE_NAME);
-
-	// output any connection error
-	if ($mysqli->connect_error) {
-	    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
+// Generate CSRF Token
+function generate_csrf_token()
+{
+	if (empty($_SESSION['csrf_token'])) {
+		$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 	}
-
-	// the query
-	$query = "SELECT * FROM store_customers ORDER BY name ASC";
-
-	// mysqli select query
-	$results = $mysqli->query($query);
-
-	if($results) {
-
-		print '<table class="table table-striped table-hover table-bordered" id="data-table"><thead><tr>
-
-				<th>Name</th>
-				<th>Email</th>
-				<th>Phone</th>
-				<th>Action</th>
-
-			  </tr></thead><tbody>';
-
-		while($row = $results->fetch_assoc()) {
-
-		    print '
-			    <tr>
-					<td>'.$row["name"].'</td>
-				    <td>'.$row["email"].'</td>
-				    <td>'.$row["phone"].'</td>
-				    <td><a href="customer-edit.php?id='.$row["id"].'" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a> <a data-customer-id="'.$row['id'].'" class="btn btn-danger btn-xs delete-customer"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-			    </tr>
-		    ';
-		}
-
-		print '</tr></tbody></table>';
-
-	} else {
-
-		echo "<p>There are no customers to display.</p>";
-
-	}
-
-	// Frees the memory associated with a result
-	$results->free();
-
-	// close connection 
-	$mysqli->close();
+	return $_SESSION['csrf_token'];
 }
 
-?>
+// Validate CSRF Token
+function validate_csrf_token($token)
+{
+	return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+}
+
+/**
+ * Flash Messages
+ */
+function set_flash_message($type, $message)
+{
+	$_SESSION['flash'][$type] = $message;
+}
+
+function get_flash_message($type)
+{
+	if (isset($_SESSION['flash'][$type])) {
+		$message = $_SESSION['flash'][$type];
+		unset($_SESSION['flash'][$type]);
+		return $message;
+	}
+	return null;
+}
+
+/**
+ * Password Hashing and Verification
+ */
+function hash_password($password)
+{
+	return password_hash($password, PASSWORD_DEFAULT);
+}
+
+function verify_password($password, $hashed_password)
+{
+	return password_verify($password, $hashed_password);
+}
+
+/**
+ * Redirect Function
+ */
+function redirect($url)
+{
+	header("Location: $url");
+	exit();
+}
+
+/**
+ * Miscellaneous Utilities
+ */
+
+// Generate a Random String
+function generate_random_string($length = 10)
+{
+	return substr(str_shuffle(str_repeat('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', $length)), 0, $length);
+}
+
+/**
+ * Error Handling
+ */
+function custom_error($error_message)
+{
+	error_log($error_message, 3, "/var/tmp/my-errors.log");
+	echo "An error occurred. Please try again later.";
+}
