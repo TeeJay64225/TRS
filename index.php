@@ -2,51 +2,69 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-   
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
-
-
-
-    <title>TRS</title>
-
+  <meta charset="UTF-8">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <header id="header">
+  <div class="wrapper">
+    <?php
+    include('db.php');
 
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $phone_number = $_POST['phone_number'];
+      $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
+      $role = 'user'; // Default role for new users
 
-        <!-- BANNER -->
-        <section id="banner">
-            <div id="banner-box">
-                <h1 id="banner-title">TRS</h1>
-                <div class="banner-underline"></div>
-                <h3 class="banner-subtitle">TRUCK RECORD SERVICES</h3>
-                <div class="sas">
-                    <a href="login.html" class="sas">Login</a>
-                    <a href="register.php">Register</a>
-                </div>
-            </div>
-        </section>
-        <!-- END BANNER -->
-    </header>
-    <!-- END HEADER -->
+      // Check if the phone number already exists
+      $check_sql = "SELECT * FROM users WHERE phone_number='$phone_number'";
+      $result = $conn->query($check_sql);
 
+      if ($result->num_rows > 0) {
+        echo "This phone number is already registered.";
+      } else {
+        $sql = "INSERT INTO users (phone_number, password, role) VALUES ('$phone_number', '$password', '$role')";
 
+        if ($conn->query($sql) === TRUE) {
+          echo "New account created successfully";
+          // Optionally, redirect to the login page
+          // header("Location: login.php");
+          // exit();
+        } else {
+          echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+      }
+    }
+    ?>
 
-    <!-- JQUERY -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <script src="./js/script.js"></script>
+    <h1>Create Account</h1>
+    <form action="signup.php" method="post">
+      <div class="input-box">
+        <input type="text" name="firstname" placeholder="First Name" required>
+      </div>
+      <div class="input-box">
+        <input type="text" name="lastname" placeholder="Last Name" required>
+      </div>
+      <div class="input-box">
+        <input type="text" name="role" placeholder="Role" required>
+      </div>
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Email" required>
+      </div>
+      <div class="input-box">
+        <input type="text" name="phone_number" placeholder="Phone Number" required>
+      </div>
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+      <button type="submit" class="btn">Signup</button>
+      <div class="login-link">
+        <p>Already have an account? <a href="login.html">Login</a></p>
+      </div>
+    </form>
+  </div>
 </body>
 
 </html>
