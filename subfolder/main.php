@@ -34,14 +34,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Function to delete a user
-if (isset($_POST['delete_user_id'])) {
-    $delete_user_id = $_POST['delete_user_id'];
-    $delete_sql = "DELETE FROM users WHERE id = $delete_user_id";
-    $conn->query($delete_sql);
-    header("Location: admin_dashboard.php");
-    exit();
-}
+
 
 // Function to add a user
 if (isset($_POST['add_user'])) {
@@ -121,14 +114,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Delete client
-if (isset($_POST['delete_client_id'])) {
-    $delete_client_id = $_POST['delete_client_id'];
-    $delete_sql = "DELETE FROM clients WHERE id = $delete_client_id";
-    $conn->query($delete_sql);
-    header("Location: admin_dashboard.php");
-    exit();
-}
+
 
 // Add client
 if (isset($_POST['add_client'])) {

@@ -146,7 +146,7 @@
                     <div>
                         <h3 class="cardHeader">Total Users</h3>
                         <h1 class="totalBalance"><?php echo $total_users; ?></h1>
-                        <p class="earnDate" id="currentDateTime"></p>
+                       <!-- <p class="earnDate" id="currentDateTime"></p> -->
                         <div class="btnContainer">
                             <div class="btn">
                                 <i class="fa-solid fa-paper-plane"></i>
@@ -166,7 +166,7 @@
                     <div class="side ">
                         <h3 class="cardHeader">Total Clients</h3>
                         <h1 class="totalBalance"><?php echo $total_clients; ?></h1>
-                        <p class="earnDate" id="currentDateTime"> Display something</p>
+                       <!-- <p class="earnDate" id="currentDateTime"> Display something</p> -->
                         <div class="btnContainer">
                             <div class="btn">
                                 <i class="fa-solid fa-paper-plane"></i>
@@ -185,7 +185,7 @@
                     <div class="side ">
                         <h3 class="cardHeader">Total Receipts</h3>
                         <h1 class="totalBalance"><?php echo $total_receipts; ?></h1>
-                        <p class="earnDate" id="currentDateTime"> Display something</p>
+                       <!-- <p class="earnDate" id="currentDateTime"> Display something</p> -->
                         <div class="btnContainer">
                             <div class="btn">
                                 <i class="fa-solid fa-paper-plane"></i>
@@ -204,7 +204,7 @@
                     <div class="side ">
                         <h3 class="cardHeader">Total Invoices</h3>
                         <h1 class="totalBalance"><?php echo $total_invoices; ?></h1>
-                        <p class="earnDate" id="currentDateTime"> Display something</p>
+                      <!--  <p class="earnDate" id="currentDateTime"> Display something</p> -->
                         <div class="btnContainer">
                             <div class="btn">
                                 <i class="fa-solid fa-paper-plane"></i>

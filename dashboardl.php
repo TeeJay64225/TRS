@@ -60,6 +60,12 @@ if (isset($_POST['add_user'])) {
 
 
 
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -243,62 +249,62 @@ if (isset($_POST['add_user'])) {
                             </form>
                         </div>
                     </div>
-               
-        <div class="analyticsCard totalBalanceCard">
-                <h3 class="cardHeader cardHeader1">
-                    <span>Expenses Instead</span>
-                    <span><i class="fa-solid fa-ellipsis"></i></span>
-                </h3>
 
-                <div class="gaugeContainer">
-                    <div class="gaugeBody">
-                        <div class="gaugeProgress"></div>
-                        <div class="guageNumber">
-                            85.5%<br>
-                            <span class="expenseStatus">Normal Level</span>
+                    <div class="analyticsCard totalBalanceCard">
+                        <h3 class="cardHeader cardHeader1">
+                            <span>Expenses Instead</span>
+                            <span><i class="fa-solid fa-ellipsis"></i></span>
+                        </h3>
+
+                        <div class="gaugeContainer">
+                            <div class="gaugeBody">
+                                <div class="gaugeProgress"></div>
+                                <div class="guageNumber">
+                                    85.5%<br>
+                                    <span class="expenseStatus">Normal Level</span>
+                                </div>
+                            </div>
+                            <div class="totalExpense">Total Exp:
+                                <span class="totalExpensePrice">$1,820.80</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="totalExpense">Total Exp: 
-                        <span class="totalExpensePrice">$1,820.80</span>
-                    </div>
-                </div>
-            </div>
-           </section>
+                </section>
 
-       </main>
-   </div>
-    <div id="clientManagementContent" class="content">
-        <h2>Client Management</h2>
-        <p>Manage your clients' information, add new clients, and update existing client details here.</p>
-    </div>
-    <div id="invoiceCreationContent" class="content">
-        <h2>Invoice Creation</h2>
-        <p>Create new invoices for your clients, add itemized services, and calculate totals.</p>
-    </div>
-    <div id="receiptManagementContent" class="content">
-        <h2>Receipt Management</h2>
-        <p>Manage receipts, view and update past transactions, and ensure accurate record-keeping.</p>
-    </div>
-    <div id="recordsContent" class="content">
-        <h2>Invoice and Receipt Records</h2>
-        <p>Access and review all your past invoices and receipts, filter by date or client.</p>
-    </div>
-    <div id="userManagementContent" class="content">
-        <h2>User Management</h2>
-        <p>Admin can manage user accounts, assign roles, and ensure secure access to the system.</p>
-    </div>
-    <div id="reportsContent" class="content">
-        <h2>Reports</h2>
-        <p>Generate various reports to analyze business performance and make informed decisions.</p>
-    </div>
-    <div id="settingsContent" class="content">
-        <h2>Settings</h2>
-        <p>Adjust your preferences, configure system settings, and update your profile information.</p>
-    </div>
-    <div id="helpCenterContent" class="content">
-        <h2>Help Center</h2>
-        <p>Find answers to common questions, contact support, and access user guides.</p>
-    </div>
+            </main>
+        </div>
+        <div id="clientManagementContent" class="content">
+            <h2>Client Management</h2>
+            <p>Manage your clients' information, add new clients, and update existing client details here.</p>
+        </div>
+        <div id="invoiceCreationContent" class="content">
+            <h2>Invoice Creation</h2>
+            <p>Create new invoices for your clients, add itemized services, and calculate totals.</p>
+        </div>
+        <div id="receiptManagementContent" class="content">
+            <h2>Receipt Management</h2>
+            <p>Manage receipts, view and update past transactions, and ensure accurate record-keeping.</p>
+        </div>
+        <div id="recordsContent" class="content">
+            <h2>Invoice and Receipt Records</h2>
+            <p>Access and review all your past invoices and receipts, filter by date or client.</p>
+        </div>
+        <div id="userManagementContent" class="content">
+            <h2>User Management</h2>
+            <p>Admin can manage user accounts, assign roles, and ensure secure access to the system.</p>
+        </div>
+        <div id="reportsContent" class="content">
+            <h2>Reports</h2>
+            <p>Generate various reports to analyze business performance and make informed decisions.</p>
+        </div>
+        <div id="settingsContent" class="content">
+            <h2>Settings</h2>
+            <p>Adjust your preferences, configure system settings, and update your profile information.</p>
+        </div>
+        <div id="helpCenterContent" class="content">
+            <h2>Help Center</h2>
+            <p>Find answers to common questions, contact support, and access user guides.</p>
+        </div>
     </div>
     </div>
     </section>

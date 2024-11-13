@@ -1,5 +1,7 @@
 <?php include('subfolder/main.php'); ?>
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -119,72 +121,70 @@
 
 
 
+
                 <section class="analytics">
                     <div class="analyticsCard">
                         <h3 class="cardHeader">Client Information</h3>
 
                         <div class="transactionContainer">
                             <?php foreach ($clients as $client) : ?>
-                                <div class="eachTransaction">
-                                    <div class="tansactionDesc">
-                                        <div class="paymentStatus">
-                                            <br>
-                                            <div class="clientField">
-                                                <span class="clientLabel style=" margin-left: 20px;">Name: </span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['name']); ?></span>
+                                <form method="post" action="">
+                                    <div class="eachTransaction">
+                                        <div class="tansactionDesc">
+                                            <div class="paymentStatus">
+                                                <br>
+                                                <div class="clientField">
+                                                    <span class="clientLabel" style="margin-left: 20px;">Name: </span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['name']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Email: </span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['email']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Phone:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['phone']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Address:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['address1']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Town:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['town']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Country:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['country']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Postal Code:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['postcode']); ?></span>
+                                                </div>
+                                                <hr>
+                                                <div class="clientField">
+                                                    <span class="clientLabel">Created:</span>
+                                                    <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['created_at']); ?></span>
+                                                </div>
+                                                <hr>
                                             </div>
-                                            <hr>
-                                            <div class=" clientField">
-                                                <span class="clientLabel">Email: </span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['email']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Phone:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['phone']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Address:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client[' address1']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Town:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['town']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Country:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['country']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Postal Code:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['postcode']); ?></span>
-                                            </div>
-                                            <hr>
-                                            <div class="clientField">
-                                                <span class="clientLabel">Created:</span>
-                                                <span class="clientData" style="margin-left: 120px;"><?php echo htmlspecialchars($client['created_at']); ?></span>
-                                            </div>
-                                            <hr>
-
+                                        </div>
+                                        <div class="transactionPrice">
+                                            <input type="hidden" name="" value="<?php echo $client['id']; ?>">
+                                            <button type="submit" class="">Delete</button>
                                         </div>
                                     </div>
-                                    <div class="transactionPrice">
-                                        <form method="post" style="display:inline-block;">
-                                            <input type="hidden" name="delete_client_id" value="<?php echo $client['id']; ?>">
-                                            <button type="submit" class="btn delete-btn">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
+                                </form>
                             <?php endforeach; ?>
                         </div>
-                        <button class="btn add-btn"><a href="client_management.php">Add Client</a></button>
+                        <button class="btn add-btn"><a href="ad_add_client.php">Add Client</a></button>
                     </div>
-
-
                 </section>
 
                 <br>
@@ -215,26 +215,7 @@
         }
 
         // Get all navigation links
-        const navLinks = document.querySelectorAll('.navLink');
-        const contentSections = document.querySelectorAll('.content');
 
-        // Add click event listener to each link
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                // Remove 'activeNavLink' class from all links
-                navLinks.forEach(link => link.classList.remove('activeNavLink'));
-
-                // Add 'activeNavLink' class to the clicked link
-                this.classList.add('activeNavLink');
-
-                // Hide all content sections
-                contentSections.forEach(section => section.classList.remove('activeContent'));
-
-                // Show the corresponding content section
-                const targetContent = this.querySelector('a').getAttribute('href').substring(1) + 'Content';
-                document.getElementById(targetContent).classList.add('activeContent');
-            });
-        });
 
         //for the time update
         function updateDateTime() {

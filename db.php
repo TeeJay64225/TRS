@@ -12,3 +12,5 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+//mongodb+srv://Dev_Quarm:LaGata#1221@cluster0.ckxpq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+

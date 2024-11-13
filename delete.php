@@ -10,7 +10,7 @@ if (isset($_GET['deleteid'])) {
     $id = $_GET['deleteid'];
 
     $sql = "DELETE FROM receipts WHERE id = $id";
-    $result = $conn->query( $sql);
+    $result = $conn->query($sql);
 
     if ($result) {
         echo "Deleted successfully";

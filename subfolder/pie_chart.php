@@ -28,6 +28,8 @@ $total_invoices = $result_invoices->fetch_assoc()['total_invoices'];
 
 
 ?>
+
+
 <?php
 session_start();
 include('db.php');
@@ -53,6 +55,7 @@ $sql_overdue_invoices = "SELECT COUNT(*) AS overdue_invoices FROM invoices WHERE
 $result_overdue_invoices = $conn->query($sql_overdue_invoices);
 $overdue_invoices = $result_overdue_invoices->fetch_assoc()['overdue_invoices'];
 ?>
+
 <?php
 session_start();
 include('db.php');

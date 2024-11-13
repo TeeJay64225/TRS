@@ -187,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row["grand_total"] . "</td>";
                             echo "<td>" . $row["payment_method"] . "</td>";
                             echo '<td>
-        <form style="display:inline;" action="invoice_management.php" method="post">
+        <form style="display:inline;" action="invoice_record.php" method="post">
             <div class="gen"> 
             <button type="submit" class="btn btn-primary" >  <a href="generate_invoice.php?invoice_id=' . $row['invoice_id'] . '" class="printBtn" target="_blank">Print</a></button>
             <button type="submit" name="action" value="delete" class="deleteBtn">Delete</button>
@@ -212,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Are you sure you want to delete this invoice?</h2>
-            <form id="deleteForm" action="all_invoice.php" method="post">
+            <form id="deleteForm" action="invoice_record.php" method="post">
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="invoice_id" id="deleteInvoiceId">
                 <button type="submit" class="deleteBtn">Yes, Delete</button>

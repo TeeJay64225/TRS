@@ -186,8 +186,8 @@
 
 
     <script>
-            //toogle
-            const toggleMenu = document.getElementById("toggleMenu");
+        //toogle
+        const toggleMenu = document.getElementById("toggleMenu");
         const toggelMenuIcon = document.getElementById("toggelMenuIcon");
         const sideNav = document.getElementById("sideNav");
         const toggleTheme = document.getElementById("toggleTheme");
@@ -203,163 +203,163 @@
             document.body.classList.toggle("darkTheme")
             e.target.classList.toggle("lightMoonIcon");
         }
-   
 
 
-    // Attendance Chart
-    document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('attendanceChart').getContext('2d');
-    const attendanceData = {
-    labels: ['Users', 'Clients'],
-    datasets: [{
-    data: [<?php echo $total_users; ?>, <?php echo $total_clients; ?>],
-    backgroundColor: ['#007bff', '#6610f2']
-    }]
-    };
-    new Chart(ctx, {
-    type: 'pie',
-    data: attendanceData,
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    position: 'top',
-    },
-    tooltip: {
-    callbacks: {
-    label: function(tooltipItem) {
-    return tooltipItem.label + ': ' + tooltipItem.raw;
-    }
-    }
-    }
-    }
-    }
-    });
-    });
 
-    // Invoice Overview Chart
-    document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('trainingChart').getContext('2d');
-    const invoiceData = {
-    labels: ['Unpaid Invoices', 'Paid Invoices', 'Overdue Invoices'],
-    datasets: [{
-    data: [<?php echo $unpaid_invoices; ?>, <?php echo $paid_invoices; ?>, <?php echo $overdue_invoices; ?>],
-    backgroundColor: ['#007bff', '#28a745', '#dc3545']
-    }]
-    };
-    new Chart(ctx, {
-    type: 'pie',
-    data: invoiceData,
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    position: 'top',
-    },
-    tooltip: {
-    callbacks: {
-    label: function(tooltipItem) {
-    return tooltipItem.label + ': ' + tooltipItem.raw;
-    }
-    }
-    }
-    }
-    }
-    });
-    });
+        // Attendance Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            const attendanceData = {
+                labels: ['Users', 'Clients'],
+                datasets: [{
+                    data: [<?php echo $total_users; ?>, <?php echo $total_clients; ?>],
+                    backgroundColor: ['#007bff', '#6610f2']
+                }]
+            };
+            new Chart(ctx, {
+                type: 'pie',
+                data: attendanceData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
 
-
-    // Evaluation Chart
-    document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('evaluationChart').getContext('2d');
-    const evaluationData = {
-    labels: ['Credit Card', 'Bank Transfer', 'PayPal'],
-    datasets: [{
-    data: [<?php echo $credit_card_receipts; ?>, <?php echo $bank_transfer_receipts; ?>, <?php echo $paypal_receipts; ?>],
-    backgroundColor: ['#007bff', '#28a745', '#dc3545']
-    }]
-    };
-    new Chart(ctx, {
-    type: 'pie',
-    data: evaluationData,
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    position: 'top',
-    },
-    tooltip: {
-    callbacks: {
-    label: function(tooltipItem) {
-    return tooltipItem.label + ': ' + tooltipItem.raw;
-    }
-    }
-    }
-    }
-    }
-    });
-    });
+        // Invoice Overview Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('trainingChart').getContext('2d');
+            const invoiceData = {
+                labels: ['Unpaid Invoices', 'Paid Invoices', 'Overdue Invoices'],
+                datasets: [{
+                    data: [<?php echo $unpaid_invoices; ?>, <?php echo $paid_invoices; ?>, <?php echo $overdue_invoices; ?>],
+                    backgroundColor: ['#007bff', '#28a745', '#dc3545']
+                }]
+            };
+            new Chart(ctx, {
+                type: 'pie',
+                data: invoiceData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
 
 
-    // Vacation Chart
-    var ctx = document.getElementById('vacationChart').getContext('2d');
-    var vacationData = {
-    labels: ['Approved', 'Pending', 'Rejected'],
-    datasets: [{
-    data: [5, 3, 2],
-    backgroundColor: ['#007bff', '#6610f2', '#e83e8c']
-    }]
-    };
-    new Chart(ctx, {
-    type: 'pie',
-    data: vacationData,
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    position: 'top'
-    },
-    tooltip: {
-    callbacks: {
-    label: function(tooltipItem) {
-    return tooltipItem.label + ': ' + tooltipItem.raw + ' requests';
-    }
-    }
-    }
-    }
-    }
-    });
+        // Evaluation Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('evaluationChart').getContext('2d');
+            const evaluationData = {
+                labels: ['Credit Card', 'Bank Transfer', 'PayPal'],
+                datasets: [{
+                    data: [<?php echo $credit_card_receipts; ?>, <?php echo $bank_transfer_receipts; ?>, <?php echo $paypal_receipts; ?>],
+                    backgroundColor: ['#007bff', '#28a745', '#dc3545']
+                }]
+            };
+            new Chart(ctx, {
+                type: 'pie',
+                data: evaluationData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
 
-    // Salary Chart
-    var ctx = document.getElementById('salaryChart').getContext('2d');
-    var salaryChartData = {
-    labels: ['Jane Smith', 'John Doe'],
-    datasets: [{
-    label: 'Salary',
-    data: [50000, 55000],
-    backgroundColor: '#007bff'
-    }]
-    };
-    new Chart(ctx, {
-    type: 'bar',
-    data: salaryChartData,
-    options: {
-    responsive: true,
-    plugins: {
-    legend: {
-    display: false
-    },
-    tooltip: {
-    callbacks: {
-    label: function(tooltipItem) {
-    return tooltipItem.label + ': $' + tooltipItem.raw;
-    }
-    }
-    }
-    },
-    indexAxis: 'x'
-    }
-    });
+
+        // Vacation Chart
+        var ctx = document.getElementById('vacationChart').getContext('2d');
+        var vacationData = {
+            labels: ['Approved', 'Pending', 'Rejected'],
+            datasets: [{
+                data: [5, 3, 2],
+                backgroundColor: ['#007bff', '#6610f2', '#e83e8c']
+            }]
+        };
+        new Chart(ctx, {
+            type: 'pie',
+            data: vacationData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + ' requests';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Salary Chart
+        var ctx = document.getElementById('salaryChart').getContext('2d');
+        var salaryChartData = {
+            labels: ['Jane Smith', 'John Doe'],
+            datasets: [{
+                label: 'Salary',
+                data: [50000, 55000],
+                backgroundColor: '#007bff'
+            }]
+        };
+        new Chart(ctx, {
+            type: 'bar',
+            data: salaryChartData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': $' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                },
+                indexAxis: 'x'
+            }
+        });
     </script>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

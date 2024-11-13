@@ -1,3 +1,5 @@
+
+
 <?php
 session_start();
 require('./copy/fpdf.php');
@@ -5,35 +7,156 @@ include('db.php');
 
 class PDF extends FPDF
 {
-    // Custom method to draw a rectangle with rounded corners
+
+    //footer
+    function Footer()
+    {
+        $this->Image('can.png', 80, 5, 30, 30); // Example: logo at top right
+
+        $this->SetY(-30);
+
+        // Set the background color for the footer
+        $this->SetFillColor(26, 102, 122); // deep heavy blue background
+
+        // Draw a rounded rectangle for the footer background (with padding)
+        $this->RoundedRect(10, $this->GetY(), 200, 20, 10, 'F'); // x, y, width, height, radius, 'F' for fill
+
+        // Set the font for the text
+        $this->SetFont('Arial', 'IB', 10);
+        $this->SetTextColor(0, 0, 0); // Black text color
+
+        // Add "Thank You" message
+        $this->SetXY(10, $this->GetY() + 5); // Adjust Y to ensure the text is placed inside the rounded rectangle
+        $this->Cell(0, 5, 'Thanks For make service with us(TRS)', 0, 1, 'C');
+
+        // Add contact information
+        $this->SetX(10); // Ensure consistent X positioning
+        $this->Cell(0, 5, 'Contact us at: +123-456-7890 | hellotrs@reallygreatsite.com', 0, 1, 'C');
+    }
+
+
+
+    // Add this method to draw a rounded rectangle
+    // RoundedRect function
     function RoundedRect($x, $y, $w, $h, $r, $style = '')
+    {
+        $k = $this->k;
+        $hp = $this->h;
+
+        if ($style == 'F') {
+            $op = 'f'; // Fill
+        } elseif ($style == 'FD' || $style == 'DF') {
+            $op = 'B'; // Fill and stroke (border)
+        } else {
+            $op = 'S'; // Stroke only (border)
+        }
+
+        $MyArc = 3 / 3 * (sqrt(2) - 1); // Arc approximation for Bézier curve
+
+        // Start from the top-left corner (without rounding)
+        $this->_out(sprintf('%.2F %.2F m', ($x) * $k, ($hp - $y) * $k)); // Move to top-left corner
+
+        // Top side: Draw a straight line to the top-right corner (without rounding on left)
+        $xc = $x + $w - $r; // X-coordinate for the top-right corner
+        $this->_out(sprintf('%.2F %.2F l', $xc * $k, ($hp - $y) * $k)); // Line to top-right corner
+
+        // Top-right corner: Draw the arc
+        $yc = $y + $r;
+        $this->_Arc($xc + $r * $MyArc, $yc - $r, $xc + $r, $yc - $r * $MyArc, $xc + $r, $yc);
+
+        // Right side: Draw the line down
+        $xc = $x + $w - $r;
+        $yc = $y + $h - $r;
+        $this->_out(sprintf('%.2F %.2F l', ($x + $w) * $k, ($hp - $yc) * $k)); // Right side line
+
+        // Bottom-right corner: Draw the arc
+        $this->_Arc($xc + $r, $yc + $r * $MyArc, $xc + $r * $MyArc, $yc + $r, $xc, $yc + $r);
+
+        // Bottom side: Draw the line from bottom-right to bottom-left (with rounding on bottom-left)
+        $xc = $x + $r;
+        $this->_out(sprintf('%.2F %.2F l', $xc * $k, ($hp - ($y + $h)) * $k)); // Bottom side line
+
+        // Bottom-left corner: Draw the arc
+        $yc = $y + $h - $r;
+        $this->_Arc($xc - $r * $MyArc, $yc + $r, $xc - $r, $yc + $r * $MyArc, $xc - $r, $yc);
+
+        // Left side: Draw the line up
+        $this->_out(sprintf('%.2F %.2F l', ($x) * $k, ($hp - $yc) * $k)); // Left side line (no rounding at top-left)
+
+        // Output the style (fill, stroke, etc.)
+        $this->_out($op);
+    }
+
+
+    // Change the background for RoundedRect to light blue
+    function Header()
+    {
+        // Set a new background color (deep heavy blue)
+        $this->SetFillColor(26, 102, 122);
+
+        // Draw a rounded rectangle background for the header
+        $this->RoundedRect(0, 0, 110, 50, 5, 'F'); // Rounded rectangle with a 5px radius
+
+        // Set text properties for the title
+        $this->SetTextColor(255, 255, 255); // White text
+        $this->SetFont('Arial', 'B', 30);
+
+        // Position and add the TRS INVOICE text
+        $this->SetXY(10, 5); // Set position to start within the rounded rect
+        $this->Cell(100, 30, 'TRS RECEIPT', 0, 0, 'L'); // Left aligned TRS
+
+        // Insert an image (logo or other image)
+        // Syntax: Image(file, x, y, width, height)
+
+
+        // Reset text color to black for the rest of the document
+        $this->SetTextColor(0, 0, 0);
+        $this->Ln(1); // Move cursor down after the header
+    }
+
+
+
+
+
+    // Separate the two functions properly
+
+    // RoundedRec function
+    function RoundedRec($x, $y, $w, $h, $r, $style = '')
     {
         $k = $this->k;
         $hp = $this->h;
         if ($style == 'F')
             $op = 'f';
-        elseif ($style == 'DF' || $style == 'FD')
+        elseif ($style == 'FD' || $style == 'DF')
             $op = 'B';
         else
             $op = 'S';
         $MyArc = 4 / 3 * (sqrt(2) - 1);
         $this->_out(sprintf('%.2F %.2F m', ($x + $r) * $k, ($hp - $y) * $k));
+
+        // Top right corner
         $xc = $x + $w - $r;
         $yc = $y + $r;
         $this->_out(sprintf('%.2F %.2F l', $xc * $k, ($hp - $y) * $k));
         $this->_Arc($xc + $r * $MyArc, $yc - $r, $xc + $r, $yc - $r * $MyArc, $xc + $r, $yc);
+
+        // Right side
         $xc = $x + $w - $r;
         $yc = $y + $h - $r;
         $this->_out(sprintf('%.2F %.2F l', ($x + $w) * $k, ($hp - $yc) * $k));
         $this->_Arc($xc + $r, $yc + $r * $MyArc, $xc + $r * $MyArc, $yc + $r, $xc, $yc + $r);
+
+        // Bottom side
         $xc = $x + $r;
         $yc = $y + $h - $r;
         $this->_out(sprintf('%.2F %.2F l', $xc * $k, ($hp - ($y + $h)) * $k));
         $this->_Arc($xc - $r * $MyArc, $yc + $r, $xc - $r, $yc + $r * $MyArc, $xc - $r, $yc);
+
+        // Left side
         $xc = $x + $r;
         $yc = $y + $r;
         $this->_out(sprintf('%.2F %.2F l', ($x) * $k, ($hp - $yc) * $k));
-        $this->_Arc($xc - $r, $yc - $r * $MyArc, $xc - $r * $MyArc, $yc - $r, $xc, $yc - $r);
+        $this->_Arc($xc - $r, $yc - $r * $MyArc, $xc - $r * $MyArc, $yc - $r, $xc, $yc);
         $this->_out($op);
     }
 
@@ -53,162 +176,235 @@ class PDF extends FPDF
     }
 }
 
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
+
+
 if (isset($_GET['receipt_id'])) {
     $receipt_id = $_GET['receipt_id'];
 
     // Fetch receipt details
-    $receipt_query = "SELECT * FROM receipts WHERE id = '$receipt_id'";
-    $receipt_result = $conn->query($receipt_query);
+    $stmt = $conn->prepare("SELECT * FROM receipts WHERE id = ?");
+    $stmt->bind_param('i', $receipt_id);  // Use prepared statements to avoid SQL injection
+    $stmt->execute();
+    $receipt_result = $stmt->get_result();
+
+    if ($receipt_result->num_rows == 0) {
+        die("Receipt not found!");
+    }
+
     $receipt = $receipt_result->fetch_assoc();
 
     // Fetch client details
     $client_id = $receipt['client_id'];
-    $client_query = "SELECT * FROM clients WHERE client_id = '$client_id'";
-    $client_result = $conn->query($client_query);
+    $stmt = $conn->prepare("SELECT * FROM clients WHERE client_id = ?");
+    $stmt->bind_param('i', $client_id);
+    $stmt->execute();
+    $client_result = $stmt->get_result();
+
+    if ($client_result->num_rows == 0) {
+        die("Client not found!");
+    }
+
     $client = $client_result->fetch_assoc();
 
     // Fetch receipt items
-    $items_query = "SELECT * FROM receipt_items WHERE receipt_id = '$receipt_id'";
-    $items_result = $conn->query($items_query);
+    $stmt = $conn->prepare("SELECT * FROM receipt_items WHERE receipt_id = ?");
+    $stmt->bind_param('i', $receipt_id);
+    $stmt->execute();
+    $items_result = $stmt->get_result();
+
+    // Proceed with further logic like generating PDFs, displaying items, etc.
+
+
 
     // Create PDF
     $pdf = new PDF('P', 'mm', 'A4');
     $pdf->AddPage();
 
-    // Add company logo
-    $pdf->Image('can.png', 10, 3, 30, 30); // Adjust the path and size as needed
+    // Invoice Info with Background and Rounded Corners
+    $pdf->SetFillColor(220, 220, 220); // Light gray background
+    $pdf->RoundedRect(110, 0, 100, 50, 5, 'F'); // Rounded rectangle
+
 
     // Set font and add the invoice title with a styled font
-    $pdf->SetFont('Arial', 'B', 24);
-    $pdf->SetTextColor(0, 102, 204); // Custom blue color
-    $pdf->Cell(80, 10, '', 0, 0); // Empty cell for spacing
-    $pdf->Cell(30, 10, 'RECEIPT', 0, 1, 'C'); // Center the title
-    $pdf->Ln(10); // Add some vertical space
+    $pdf->SetFillColor(220, 220, 220); // Light gray background
+    $pdf->RoundedRect(110, 0, 100, 50, 5, 'F'); // Rounded rectangle
 
-    // Add company name and details
-    $pdf->SetFont('Arial', 'B', 15);
-    $pdf->SetTextColor(33, 33, 33); // Dark gray color
-    $pdf->Cell(130, 10, 'TRS', 0, 0); // Company Name
-    $pdf->SetFont('Arial', 'I', 10);
-    $pdf->SetTextColor(100, 100, 100); // Lighter gray for details
-    $pdf->Cell(30, 10, 'Details', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 13);
+    $pdf->SetTextColor(0, 0, 0); // Black text
+    $pdf->SetXY(100, 10); // Positioning
+    $pdf->Cell(0, 10, "RECEIPT NO:# " . $receipt['receipt_number'], 0, 1, 'R');
+    $pdf->Cell(0, 10, "RECEIPT DATE: " . date('d M Y', strtotime($receipt['date'])), 0, 1, 'R');
+    $pdf->Cell(0, 10, 'City, 751001', 0, 1, 'R');
+    $pdf->Cell(0, 10, 'Near DAV', 0, 1, 'R');
+    // Invoice to section
+    $pdf->SetFillColor(173, 216, 230); // Light blue background
+    $pdf->RoundedRect(15, 65, 180, 50, 10, 'F');
+    $pdf->SetFont('Arial', 'B', 30);
+    $pdf->SetXY(20, 85);
+    $pdf->Cell(100, 10, 'RECEIPT TO:', 0, 1);
 
-    // Add company address and invoice details with a background color
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->SetFillColor(230, 230, 230); // Light gray background
-    $pdf->Cell(130, 10, 'Near DAV', 0, 0, '', true); // Company Address with background
-    $pdf->Cell(30, 10, 'Customer ID:', 0, 0);
-    $pdf->Cell(30, 10, $client['client_id'], 0, 1, '', true); // Customer ID with background
+    $pdf->SetFont('Arial', 'B', 20);
+    $pdf->SetXY(120, 80);
+    $pdf->Cell(100, 10, $client['name'], 0, 1);
+    $pdf->SetXY(120, 90);
+    $pdf->Cell(100, 10, $client['phone'], 0, 1);
+    $pdf->SetXY(120, 100);
+    $pdf->Cell(100, 10, $client['client_id'], 0, 1);
 
-    $pdf->Cell(130, 10, 'City, 751001', 0, 0, '', true); // City and Zip Code with background
-    $pdf->Cell(30, 10, 'Receipt Date:', 0, 0);
-    $pdf->Cell(30, 10, date('d M Y', strtotime($receipt['receipt_date'])), 0, 1, '', true); // Receipt Date
+    $pdf->Ln(10); // Add space after the section
 
-    $pdf->Cell(130, 5, '', 0, 0); // Empty cell for spacing
-    $pdf->Cell(25, 5, 'Receipt Number', 0, 0);
-    $pdf->Cell(34, 5, '#' . $receipt['receipt_number'], 0, 1, '', true); // Receipt Number
 
-    // Add "Bill to" section with client name
-    $pdf->SetFont('Arial', 'B', 15);
-    $pdf->SetTextColor(0, 102, 204); // Blue color for "Bill to"
-    $pdf->Cell(130, 10, 'Bill to:', 0, 0);
-    $pdf->SetTextColor(33, 33, 33); // Dark gray for client name
-    $pdf->Cell(59, 10, $client['name'], 0, 1);
+    // Table Header with Blue Background
 
-    // Add table header with rounded corners and background color
-    $pdf->Ln(5); // Add some vertical space
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->SetFillColor(200, 220, 255); // Light blue background
-    $pdf->SetTextColor(0, 0, 0); // Black text color
 
-    // Draw rounded rectangles for the header cells
-    $pdf->RoundedRect(10, $pdf->GetY(), 10, 8, 2, 'DF'); // Serial Number
-    $pdf->RoundedRect(20, $pdf->GetY(), 90, 8, 2, 'DF'); // Item Description
-    $pdf->RoundedRect(110, $pdf->GetY(), 30, 8, 2, 'DF'); // Quantity
-    $pdf->RoundedRect(140, $pdf->GetY(), 30, 8, 2, 'DF'); // Unit Price
+    // Then call the function like this:
+    function table_header($pdf) {}
 
-    // Add the header text
-    $pdf->Cell(10, 8, 'SL', 0, 0, 'C', true); // Serial Number
-    $pdf->Cell(90, 8, 'Description', 0, 0, 'C', true); // Item Description
-    $pdf->Cell(30, 8, 'QTY', 0, 0, 'C', true); // Quantity
-    $pdf->Cell(30, 8, 'Unit Price', 0, 1, 'C', true); // Unit Price
+    $pdf->SetFont('Arial', 'B', 14);
+    $pdf->SetFillColor(26, 102, 122); // Deep heavy blue background
+    $pdf->SetTextColor(255, 255, 255); // White text
+    $pdf->Cell(15, 10, 'SL', 1, 0, 'C', true);
+    $pdf->Cell(75, 10, 'DESCRIPTION', 1, 0, 'C', true);
+    $pdf->Cell(45, 10, 'QTY', 1, 0, 'C', true);
+    $pdf->Cell(53, 10, 'UNIT PRICE', 1, 1, 'C', true);
+
+    // Reset text color to black for rows
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Ln(2); // Add space after the section
 
     // Variables to store totals
     $total_sub = 0;
-    $total_grand = 0;
+    $total_tax = 0;
+    $grand_total = 0;
     $sl = 1;
-    $tax = $receipts['tax'];
-    // Add table rows with receipt data
-    $pdf->SetFont('Arial', '', 10);
-    while ($item = $items_result->fetch_assoc()) {
-        $qty = $item['quantity'];
-        $product_id = $item['product_id'];
-        $product_query = "SELECT name, price FROM products WHERE id = '$product_id'";
-        $product_result = $conn->query($product_query);
-        $product = $product_result->fetch_assoc();
-        // Fetch receipt details
-        $receipt_query = "SELECT * FROM receipts WHERE id = '$receipt_id'";
-        $receipt_result = $conn->query($receipt_query);
-        $receipt = $receipt_result->fetch_assoc();
-        
-        $description = $product['name'];
-        $unit_price = $product['price'];
-        $tax = $receipt['tax'];
-        $discount = $item['discount'];
-        $total_sub = $qty * $unit_price - $discount;
 
-        $total_sub += $subtotal;
-        $grand_total = $total_sub + $receipt['tax'];
 
-        $pdf->Cell(10, 6, $sl++, 1, 0, 'C'); // Serial Number
-        $pdf->Cell(90, 6, $description, 1, 0); // Item Description
-        $pdf->Cell(30, 6, $qty, 1, 0, 'R'); // Quantity
-        $pdf->Cell(30, 6, number_format($unit_price, 2), 1, 1, 'R'); // Unit Price
+    function table_row($pdf, $sl, $item, $x1 = 10, $y1 = null)
+    {
+        // Set the starting position for the row (use $y1 to set the position dynamically)
+        if ($y1 === null) {
+            $y1 = $pdf->GetY(); // Get the current Y position if not specified
+        }
+
+        // Set the background color for the row (adjust the color as needed)
+        $pdf->SetFillColor(240, 240, 240); // Light gray background
+
+        // Draw a single rounded rectangle for the entire row
+        $pdf->RoundedRect($x1, $y1, 190, 12, 5, 'F');  // Whole row, width 190, height 12, with 5px radius
+
+        // Set the font for the text
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->SetTextColor(0, 0, 0); // Black text
+
+        // Add text for each column
+        $pdf->SetXY($x1 + 5, $y1 + 3); // Small padding inside the rounded rectangle
+        $pdf->Cell(8, 6, $sl, 0, 0, 'C');  // Serial Number column
+
+        $pdf->SetXY($x1 + 40, $y1 + 3); // Description column with padding
+        $pdf->Cell(70, 6, $item['description'], 0, 0, 'L');
+
+        $pdf->SetXY($x1 + 105, $y1 + 3); // Quantity column with padding
+        $pdf->Cell(30, 6, $item['quantity'], 0, 0, 'C');
+
+        $pdf->SetXY($x1 + 135, $y1 + 3); // Unit Price column with padding
+        $pdf->Cell(30, 6, "$" . number_format($item['unit_price'], 2), 0, 1, 'R');
+
+        // Add spacing between rows
+        $pdf->Ln(4); // Adjust this value for more or less spacing between rows
     }
 
-    // Add the header text
-    $pdf->Cell(10, 8, '', 0, 0, 'C', true); // Serial Number
-    $pdf->Cell(90, 8, '', 0, 0, 'C', true); // Item Description
-    $pdf->Cell(30, 8, '', 0, 0, 'C', true); // Quantity
-    $pdf->Cell(30, 8, '', 0, 1, 'C', true); // Unit Price
 
+    // Initialize subtotal, tax, and counter
+    $total_sub = 0;
+    $total_tax = 0;
+    $sl = 1;
+
+    // Add table rows for invoice items
+    while ($item = $items_result->fetch_assoc()) {
+        // Calculate totals
+        $total_sub += $item['quantity'] * $item['unit_price'];
+        $total_tax += ($item['quantity'] * $item['unit_price']) * 0.18; // Assuming 18% tax
+
+        // Call the table_row function to add a row for each item
+        table_row($pdf, $sl++, $item);
+    }
+
+    // Calculate grand total
+    $grand_total = $total_sub + $total_tax;
+
+
+
+
+
+
+    // Table Row with Rounded Corners for the Whole Row and Small Spacing
+
+
+    $pdf->Ln(15); // Add some vertical space
     // Add a horizontal line above the totals section
     $pdf->Cell(0, 0, '', 'T'); // This adds a top border to create a horizontal line
 
-    // Add totals at the bottom
-    $pdf->Ln(5); // Add some vertical space
-    $pdf->SetFont('Arial', 'B', 10);
-    $pdf->SetFillColor(230, 230, 230); // Light gray background
-    $pdf->SetTextColor(0, 0, 0); // Black text color
+    $pdf->Ln(2);
+    $pdf->Ln(2);
 
-    $pdf->Cell(110, 6, '', 0, 0); // Empty cells to align the totals at the bottom
-    $pdf->Cell(25, 6, 'Subtotal', 1, 0, 'R', true); // Subtotal label
-    $pdf->Cell(25, 6, number_format($total_sub, 2), 1, 1, 'R', true); // Subtotal amount
+    // Set background color for the subtotal and tax rows
+    $pdf->SetFillColor(26, 102, 122); // deep heavy blue background
+    $pdf->SetTextColor(0, 0, 0); // Black text
 
-    $pdf->Cell(110, 6, '', 0, 0); // Empty cells to align the totals at the bottom
-    $pdf->Cell(25, 6, 'Discount(-):', 1, 0, 'R', true); // Discount label
-    $pdf->Cell(25, 6, number_format($discount, 2), 1, 1, 'R', true); // Discount amount
+    // Subtotal
+    $pdf->RoundedRect(110, $pdf->GetY(), 90, 10, 3, 'F'); // Rounded corners for the background
+    $pdf->SetFillColor(173, 216, 230); // Light blue background
+    $pdf->SetXY(55, $pdf->GetY() + 2);
+    $pdf->Cell(100, 6, 'Subtotal', 0, 0, 'R');
+    $pdf->Cell(40, 6, "$" . number_format($total_sub, 2), 0, 1, 'R');
+    $pdf->Ln(2); // Small space after row
 
-    $pdf->Cell(110, 6, '', 0, 0); // Empty cells to align the totals at the bottom
-    $pdf->Cell(25, 6, 'Tax (+15%)', 1, 0, 'R', true); // Tax label
-    $pdf->Cell(25, 6, number_format($tax, 2), 1, 1, 'R', true); // Tax amount
+    // Discount
+    $pdf->RoundedRect(110, $pdf->GetY(), 90, 10, 3, 'F'); // Rounded corners for the background
+    $pdf->SetXY(55, $pdf->GetY() + 2);
+    $pdf->Cell(100, 6, 'Discount', 0, 0, 'R');
+    $pdf->Cell(40, 6, "$" . number_format($discount, 2), 0, 1, 'R');
+    $pdf->Ln(2); // Small space after row
 
-    $pdf->Cell(110, 6, '', 0, 0); // Empty cells to align the totals at the bottom
-    $pdf->Cell(25, 6, 'Grand Total', 1, 0, 'R', true); // Grand Total label
-    $pdf->Cell(25, 6, number_format($grand_total, 2), 1, 1, 'R', true); // Grand Total amount
+    // Tax
+    $pdf->RoundedRect(110, $pdf->GetY(), 90, 10, 3, 'F'); // Same style for tax
+    $pdf->SetFillColor(26, 102, 122); // deep heavy blue background
+    $pdf->SetXY(55, $pdf->GetY() + 2);
+    $pdf->Cell(100, 6, 'Tax (18%)', 0, 0, 'R'); // Corrected tax percentage label
+    $pdf->Cell(40, 6, "$" . number_format($total_tax, 2), 0, 1, 'R');
+    $pdf->Ln(2);
 
-    // Add a horizontal line above the totals section
-    $pdf->Cell(0, 0, '', 'T'); // This adds a top border to create a horizontal line
-    // Add a note section
-    $pdf->Ln(5); // Add some vertical space
-    $pdf->SetFont('Arial', 'I', 12);
-    $pdf->SetTextColor(100, 100, 100); // Lighter gray for the note
-    $pdf->MultiCell(190, 10, 'Note: This is a sample note section. Thanks For make service with us(TRS).', 0, 'L');
+    // Set red background and white text for the TOTAL row
+    $pdf->SetFillColor(255, 0, 0); // Red background
+    $pdf->RoundedRect(110, $pdf->GetY(), 90, 12, 5, 'F'); // Rounded corners for TOTAL
+    $pdf->SetXY(55, $pdf->GetY() + 3); // Adjust position slightly to center text
+
+    // TOTAL row
+    $pdf->SetFont('Arial', 'B', 15); // Bold and larger font for the total
+    $pdf->SetTextColor(0, 0, 0); // Black text
+    $pdf->Cell(100, 6, 'TOTAL', 0, 0, 'R');
+    $pdf->Cell(40, 6, "$" . number_format($grand_total, 2), 0, 1, 'R');
+
+    // Reset text color back to black
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Ln(5); // Add some space after the totals section
+
+    // Calculate grand total
+    $grand_total = $total_sub - $discount + $total_tax;
+
+
+
+
+
+
+
+
     // Output the PDF
     $pdf->Output();
 } else {
